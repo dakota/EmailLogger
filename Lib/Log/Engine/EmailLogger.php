@@ -7,7 +7,8 @@ class EmailLogger implements CakeLogInterface {
 		'levels' => array('warning', 'notice', 'debug', 'info', 'error'),
 		'email' => 'email_logger',
 		'duplicates' => true,
-		'file' => 'email_logger.log'
+		'file' => 'email_logger.log',
+		'subject' => 'EmailLogger: '
 	);
 
     public function __construct($config = array()) {
@@ -20,7 +21,7 @@ class EmailLogger implements CakeLogInterface {
 		if (empty($levels) || in_array($type, $levels)) {
 			if ($duplicates || (!$duplicates && strpos(file_get_contents($file), $message) === false)) {
 				try {
-					CakeEmail::deliver(null, 'EmailLogger: ' . $type, $message, $email);
+					CakeEmail::deliver(null, $subject . $type, $message, $email);
 					if (!$duplicates) {
 						$output = $message . "\n";
 						file_put_contents($file, $output, FILE_APPEND);
