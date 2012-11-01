@@ -4,11 +4,12 @@ App::uses('CakeEmail', 'Network/Email');
 class EmailLogger implements CakeLogInterface {
 
 	public $config = array(
-		'levels' => array('warning', 'notice', 'debug', 'info', 'error'),
+		'types' => array('warning', 'notice', 'debug', 'info', 'error'),
 		'email' => 'email_logger',
 		'duplicates' => true,
 		'file' => 'email_logger.log',
-		'subject' => 'EmailLogger: '
+		'subject' => 'EmailLogger: ',
+		'skip' => array()
 	);
 
     public function __construct($config = array()) {
@@ -18,7 +19,14 @@ class EmailLogger implements CakeLogInterface {
 
     public function write($type, $message) {
 		extract($this->config);
-		if (empty($levels) || in_array($type, $levels)) {
+
+		foreach($skip as $stringToSkip) {
+			if(stripos($message, $stringToSkip) !== false) {
+				return;
+			}
+		}
+
+		if (empty($types) || in_array($type, $types)) {
 			if ($duplicates || (!$duplicates && strpos(file_get_contents($file), $message) === false)) {
 				try {
 					CakeEmail::deliver(null, $subject . $type, $message, $email);
