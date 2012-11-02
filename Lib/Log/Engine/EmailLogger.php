@@ -9,7 +9,7 @@ class EmailLogger implements CakeLogInterface {
 		'duplicates' => true,
 		'file' => 'email_logger.log',
 		'subject' => 'EmailLogger: ',
-		'skip' => array()
+		'skip' => array(),
 	);
 
     public function __construct($config = array()) {
@@ -17,18 +17,24 @@ class EmailLogger implements CakeLogInterface {
 		$this->config['file'] = LOGS . $this->config['file'];
     }
 
-    public function write($type, $message) {
+    public function write($type, $errorMessage) {
 		extract($this->config);
 
 		foreach($skip as $stringToSkip) {
-			if(stripos($message, $stringToSkip) !== false) {
+			if(stripos($errorMessage, $stringToSkip) !== false) {
 				return;
 			}
 		}
 
 		if (empty($types) || in_array($type, $types)) {
-			if ($duplicates || (!$duplicates && strpos(file_get_contents($file), $message) === false)) {
+			if ($duplicates || (!$duplicates && strpos(file_get_contents($file), $errorMessage) === false)) {
 				try {
+					$message = "URL: " . Router::url(null, true) . "\r\n";
+					if(AuthComponent::user()) {
+						$message .= "User: " . print_r(AuthComponent::user(), true) . "\r\n";
+					}
+					$message .= "\r\n== Error Message ==\r\n\r\n" . $errorMessage;
+
 					CakeEmail::deliver(null, $subject . $type, $message, $email);
 					if (!$duplicates) {
 						$output = $message . "\n";
