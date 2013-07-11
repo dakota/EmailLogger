@@ -30,10 +30,10 @@ class EmailLogger implements CakeLogInterface {
 			if ($duplicates || (!$duplicates && strpos(file_get_contents($file), $errorMessage) === false)) {
 				try {
 					$message = "URL: " . Router::url(null, true) . "\r\n";
+					$message .= "Error: " . $errorMessage;
 					if(class_exists('AuthComponent') && AuthComponent::user()) {
-						$message .= "User: " . print_r(AuthComponent::user(), true) . "\r\n";
+						$message .= "\r\n\r\n=== User details ===\r\n" . print_r(AuthComponent::user(), true);
 					}
-					$message .= "\r\n== Error Message ==\r\n\r\n" . $errorMessage;
 
 					CakeEmail::deliver(null, $subject . $type, $message, $email);
 					if (!$duplicates) {

@@ -10,7 +10,7 @@
  * - 'error'
  *
  */
-$config['EmailLogger']['levels'] = array(); //leave empty for all core and user levels
+$config['EmailLogger']['types'] = array(); //leave empty for all core and user levels
 
 /*
  * Set the email configuration name defined in app/Config/email.php or
