@@ -1,0 +1,21 @@
+{
+    "name": "dakota/email_logger",
+    "type": "cakephp-plugin",
+    "description": "CakePHP Email Logger",
+    "keywords": [
+        "cakephp",
+        "logging"
+    ],
+    "homepage": "http://github.com/dakota/emaillogger",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Walther Lalk",
+            "email": "waltherlalk@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.0",
+        "composer/installers": "*"
+    }
+}
