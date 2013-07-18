@@ -35,10 +35,10 @@ class EmailLogger implements CakeLogInterface {
 						$message .= "\r\n=== User details ===\r\n" . print_r(AuthComponent::user(), true) . "\r\n";
 					}
 					if (!empty($_POST)) {
-						$message .= "\r\n=== POST ===\r\n" . var_export($_POST) . "\r\n";
+						$message .= "\r\n=== POST ===\r\n" . var_export($_POST, true) . "\r\n";
 					}
 					if (!empty($_GET)) {
-						$message .= "\r\n=== GET ===\r\n" . var_export($_GET) . "\r\n";
+						$message .= "\r\n=== GET ===\r\n" . var_export($_GET, true) . "\r\n";
 					}
 
 					CakeEmail::deliver(null, $subject . $type, $message, $email);
