@@ -12,16 +12,16 @@ class EmailLogger implements CakeLogInterface {
 		'skip' => array(),
 	);
 
-    public function __construct($config = array()) {
+	public function __construct($config = array()) {
 		$this->config = array_merge($this->config, $config);
 		$this->config['file'] = LOGS . $this->config['file'];
-    }
+	}
 
-    public function write($type, $errorMessage) {
+	public function write($type, $errorMessage) {
 		extract($this->config);
 
-		foreach($skip as $stringToSkip) {
-			if(stripos($errorMessage, $stringToSkip) !== false) {
+		foreach ($skip as $stringToSkip) {
+			if (stripos($errorMessage, $stringToSkip) !== false) {
 				return;
 			}
 		}
@@ -30,9 +30,15 @@ class EmailLogger implements CakeLogInterface {
 			if ($duplicates || (!$duplicates && strpos(file_get_contents($file), $errorMessage) === false)) {
 				try {
 					$message = "URL: " . Router::url(null, true) . "\r\n";
-					$message .= "Error: " . $errorMessage;
-					if(class_exists('AuthComponent') && AuthComponent::user()) {
-						$message .= "\r\n\r\n=== User details ===\r\n" . print_r(AuthComponent::user(), true);
+					$message .= "\r\n=== Error Message ===\r\n" . $errorMessage . "\r\n";
+					if (class_exists('AuthComponent') && AuthComponent::user()) {
+						$message .= "\r\n=== User details ===\r\n" . print_r(AuthComponent::user(), true) . "\r\n";
+					}
+					if (!empty($_POST)) {
+						$message .= "\r\n=== POST ===\r\n" . var_export($_POST) . "\r\n";
+					}
+					if (!empty($_GET)) {
+						$message .= "\r\n=== GET ===\r\n" . var_export($_GET) . "\r\n";
 					}
 
 					CakeEmail::deliver(null, $subject . $type, $message, $email);
@@ -40,8 +46,9 @@ class EmailLogger implements CakeLogInterface {
 						$output = $message . "\n";
 						file_put_contents($file, $output, FILE_APPEND);
 					}
-				} catch(Exception $e) {}
+				} catch (Exception $e) {
+				}
 			}
 		}
-    }
+	}
 }
