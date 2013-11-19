@@ -1,5 +1,5 @@
 <?php
-$options = array('engine' => 'EmailLogger.EmailLogger');
+$options = array('engine' => 'EmailLogger.EmailLog');
 
 try {
 	Configure::load('EmailLogger.config');
